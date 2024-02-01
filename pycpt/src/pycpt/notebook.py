@@ -262,13 +262,14 @@ SKILL_METRICS = {
 SKILL_METRICS["generalized_roc"][0].set_under("lightgray")
 SKILL_METRICS["rank_probability_skill_score"][0].set_under("lightgray")
 
-def plot_skill(predictor_names, skill, MOS, files_root, skill_metrics):
+def plot_skill(predictor_names, skill, MOS, files_root, skill_metrics,
+               plot_borders=True):
     fig, ax = plt.subplots(
         nrows=len(predictor_names),
         ncols=len(skill_metrics),
         subplot_kw={"projection": cartopy.crs.PlateCarree()},
         figsize=(5 * len(skill_metrics), 2.5 * len(predictor_names)),
-        squeeze=False,
+        squeeze=False
     )
     for i, model in enumerate(predictor_names):
         for j, skill_metric in enumerate(skill_metrics):
@@ -279,7 +280,8 @@ def plot_skill(predictor_names, skill, MOS, files_root, skill_metrics):
                 .plot(ax=ax[i][j], cmap=metric[0], vmin=metric[1], vmax=metric[2])
             )
             ax[i][j].coastlines()
-            ax[i][j].add_feature(cartopy.feature.BORDERS)
+            if plot_borders:
+                ax[i][j].add_feature(cartopy.feature.BORDERS)
             ax[0][j].set_title(skill_metric.upper())
 
         ax[i][0].text(
@@ -302,7 +304,7 @@ def plot_skill(predictor_names, skill, MOS, files_root, skill_metrics):
 
 
 def plot_cca_modes(
-    MOS, predictor_names, pxs, pys, files_root
+    MOS, predictor_names, pxs, pys, files_root, plot_borders=True
 ):
     nmodes = 3
     cmap = plt.get_cmap("cpt.loadings", 11)
@@ -413,8 +415,9 @@ def plot_cca_modes(
                 map1_ax.coastlines()
                 map2_ax.coastlines()
 
-                map1_ax.add_feature(cartopy.feature.BORDERS)
-                map2_ax.add_feature(cartopy.feature.BORDERS)
+                if plot_borders:
+                    map1_ax.add_feature(cartopy.feature.BORDERS)
+                    map2_ax.add_feature(cartopy.feature.BORDERS)
                 plt.show()
 
                 # save plots
@@ -425,7 +428,7 @@ def plot_cca_modes(
 
 
 def plot_eof_modes(
-    MOS, predictor_names, pxs, pys, files_root
+    MOS, predictor_names, pxs, pys, files_root, plot_borders=True
 ):
     nmodes = 5
     cmap = plt.get_cmap("cpt.loadings", 11)
@@ -567,8 +570,9 @@ def plot_eof_modes(
 
                 map1_ax.coastlines()
                 map2_ax.coastlines()
-                map1_ax.add_feature(cartopy.feature.BORDERS)
-                map2_ax.add_feature(cartopy.feature.BORDERS)
+                if plot_borders:
+                    map1_ax.add_feature(cartopy.feature.BORDERS)
+                    map2_ax.add_feature(cartopy.feature.BORDERS)
                 plt.show()
 
                 # save plots
@@ -617,7 +621,8 @@ def plot_eof_modes(
                 # map2_ax.set_title('Y EOF MODE {}'.format(mode+1))
 
                 map1_ax.coastlines()
-                map1_ax.add_feature(cartopy.feature.BORDERS)
+                if plot_borders:
+                    map1_ax.add_feature(cartopy.feature.BORDERS)
                 # map2_ax.coastlines()
                 plt.show()
 
@@ -635,6 +640,7 @@ def plot_forecasts(
     files_root,
     predictor_names,
     MOS,
+    plot_borders=True
 ):
     prob_missing_value_flag = -1
     my_dpi = 100
@@ -669,7 +675,8 @@ def plot_forecasts(
             cmap_nn=cmapN,
             orientation=graph_orientation,
         )
-        cartopyInstance.add_feature(cartopy.feature.BORDERS, edgecolor="black")
+        if plot_borders:
+            cartopyInstance.add_feature(cartopy.feature.BORDERS, edgecolor="black")
         cartopyInstance.set_title("")
         # cartopyInstance.axis("off")
         allaxes = matplotlibInstance.get_axes()
@@ -736,9 +743,10 @@ def plot_forecasts(
         )
         cb.ax.tick_params(labelsize=15)
 
-        art.axes.add_feature(
-            cartopy.feature.BORDERS, edgecolor="black"
-        )  # ,linewidth=4.5
+        if plot_borders:
+            art.axes.add_feature(
+                cartopy.feature.BORDERS, edgecolor="black"
+            )  # ,linewidth=4.5
         art.axes.coastlines(edgecolor="black")  # ,linewidth=4.5
         plt.savefig(
             files_root / "figures" / "Test.png",
@@ -779,7 +787,7 @@ def plot_forecasts(
 
 
 def plot_mme_skill(
-        predictor_names, nextgen_skill, MOS, files_root, skill_metrics
+        predictor_names, nextgen_skill, MOS, files_root, skill_metrics, plot_borders=True
 ):
     graph_orientation = ce.graphorientation(
         len(nextgen_skill["X"]),
@@ -811,7 +819,8 @@ def plot_mme_skill(
             )
 
             ax[i][j].coastlines()
-            ax[i][j].add_feature(cartopy.feature.BORDERS)
+            if plot_borders:
+                ax[i][j].add_feature(cartopy.feature.BORDERS)
             ax[i][j].set_title(skill_metric.upper())
 
             cb = plt.colorbar(n, orientation=graph_orientation)  # location='bottom')
@@ -832,7 +841,8 @@ def plot_mme_forecasts(
     pr_fcst,
     MOS,
     files_root,
-    det_fcst,
+    det_fcst, 
+    plot_borders=True
 ):
     missing_value_flag = -999
     prob_missing_value_flag = -1
@@ -864,7 +874,8 @@ def plot_mme_forecasts(
         cmap_nn=cmapN,
         orientation=graph_orientation,
     )
-    cartopyInstance.add_feature(cartopy.feature.BORDERS)
+    if plot_borders:
+        cartopyInstance.add_feature(cartopy.feature.BORDERS)
     cartopyInstance.set_title("")
     # cartopyInstance.axis("off")
 
@@ -912,7 +923,8 @@ def plot_mme_forecasts(
     cb.set_label(label=datart.name, size=16)
     cb.ax.tick_params(labelsize=15)
 
-    art.axes.add_feature(cartopy.feature.BORDERS, edgecolor="black")  # ,linewidth=4.5
+    if plot_borders:
+        art.axes.add_feature(cartopy.feature.BORDERS, edgecolor="black")  # ,linewidth=4.5
     art.axes.coastlines(edgecolor="black")
 
     plt.savefig(
@@ -955,6 +967,7 @@ def plot_mme_flex_forecasts(
     MOS,
     files_root,
     color_bar,
+    plot_borders=True
 ):
     if point_latitude is None:
         point_latitude = round(
@@ -1058,7 +1071,8 @@ def plot_mme_flex_forecasts(
         transform=ccrs.PlateCarree(),
     )
     coasts = art.axes.coastlines()
-    art.axes.add_feature(cartopy.feature.BORDERS)
+    if plot_borders:
+        art.axes.add_feature(cartopy.feature.BORDERS)
     gl = map_ax.gridlines(
             crs=ccrs.PlateCarree(),
             draw_labels=True,
@@ -1362,7 +1376,7 @@ def construct_flex_fcst(MOS, cpt_args, det_fcst, threshold, isPercentile, Y, pev
 
     return exceedance_prob, fcst_scale, climo_scale, adjusted_fcst_mu, climo_mu, Y2, ntrain, threshold
 
-def plot_domains(predictor_extent, predictand_extent):
+def plot_domains(predictor_extent, predictand_extent, plot_borders=True):
         #Create a feature for States/Admin 1 regions at 1:10m from Natural Earth
         states_provinces = cartopy.feature.NaturalEarthFeature(
                 category='cultural',
@@ -1391,5 +1405,6 @@ def plot_domains(predictor_extent, predictand_extent):
             pl.ylabels_left = False
             pl.xformatter = cartopy.mpl.gridliner.LONGITUDE_FORMATTER
             pl.yformatter = cartopy.mpl.gridliner.LATITUDE_FORMATTER
-            ax.add_feature(states_provinces, edgecolor='gray')
+            if plot_borders:
+                ax.add_feature(states_provinces, edgecolor='gray')
         plt.show()

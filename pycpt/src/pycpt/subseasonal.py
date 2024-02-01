@@ -247,7 +247,7 @@ def evaluate_models(hindcast_data, forecast_data, Y, MOS, cpt_args, domain_dir, 
     return hcsts, fcsts, skill, pxs, pys
 
 
-def plot_skill(skill, MOS, files_root, skill_metrics):
+def plot_skill(skill, MOS, files_root, skill_metrics, plot_borders=True):
     for metric_name in skill_metrics:
         nrows = len(skill['model'])
         ncols = len(skill['lead_name'])
@@ -273,7 +273,8 @@ def plot_skill(skill, MOS, files_root, skill_metrics):
                         add_colorbar=j == len(skill['lead_name']) - 1)
                 )
                 ax[i][j].coastlines()
-                ax[i][j].add_feature(cartopy.feature.BORDERS)
+                if plot_borders:
+                    ax[i][j].add_feature(cartopy.feature.BORDERS)
                 ax[0][j].set_title(lead_name) # todo looks fishy
 
             ax[i][0].text(
@@ -296,7 +297,7 @@ def plot_skill(skill, MOS, files_root, skill_metrics):
 
 
 def plot_eof_modes(
-        pxs, pys, MOS, files_root
+        pxs, pys, MOS, files_root, plot_borders=True
 ):
     nmodes = 5
     cmap = plt.get_cmap("cpt.loadings", 11)
@@ -413,8 +414,9 @@ def plot_eof_modes(
 
                     map1_ax.coastlines()
                     map2_ax.coastlines()
-                    map1_ax.add_feature(cartopy.feature.BORDERS)
-                    map2_ax.add_feature(cartopy.feature.BORDERS)
+                    if plot_borders:
+                        map1_ax.add_feature(cartopy.feature.BORDERS)
+                        map2_ax.add_feature(cartopy.feature.BORDERS)
                     plt.show()
 
                     # save plots
@@ -427,7 +429,7 @@ def plot_eof_modes(
 
 
 def plot_cca_modes(
-        pxs, pys, MOS, files_root
+        pxs, pys, MOS, files_root, plot_borders=True
 ):
     nmodes = 3
     cmap = plt.get_cmap("cpt.loadings", 11)
@@ -529,8 +531,9 @@ def plot_cca_modes(
                     map1_ax.coastlines()
                     map2_ax.coastlines()
 
-                    map1_ax.add_feature(cartopy.feature.BORDERS)
-                    map2_ax.add_feature(cartopy.feature.BORDERS)
+                    if plot_borders:
+                        map1_ax.add_feature(cartopy.feature.BORDERS)
+                        map2_ax.add_feature(cartopy.feature.BORDERS)
                     plt.show()
 
                     # save plots
@@ -565,7 +568,8 @@ def plot_forecasts(
         predictand_name,
         user_color=color_bar,
         user_vmin=vmin,
-        user_vmax=vmax
+        user_vmax=vmax,
+        plot_borders=True
     )
 
     # colormap for probabilistic forecast
@@ -590,7 +594,8 @@ def plot_forecasts(
                 cmap_nn=cmapN,
                 orientation=graph_orientation,
             )
-            cartopyInstance.add_feature(cartopy.feature.BORDERS, edgecolor="black")
+            if plot_borders:
+                cartopyInstance.add_feature(cartopy.feature.BORDERS, edgecolor="black")
             cartopyInstance.set_title("")
 
             cartopyInstance.spines["left"].set_color("blue")
@@ -652,9 +657,10 @@ def plot_forecasts(
             )
             cb.ax.tick_params(labelsize=15)
 
-            art.axes.add_feature(
-                cartopy.feature.BORDERS, edgecolor="black"
-            )  # ,linewidth=4.5
+            if plot_borders:
+                art.axes.add_feature(
+                    cartopy.feature.BORDERS, edgecolor="black"
+                )  # ,linewidth=4.5
             art.axes.coastlines(edgecolor="black")  # ,linewidth=4.5
             plt.savefig(
                 files_root / "figures" / "Test.png",
